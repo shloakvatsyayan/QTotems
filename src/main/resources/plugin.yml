@@ -8,3 +8,16 @@ api-version: '1.21.11'
 load: POSTWORLD
 
 authors: [ Qssaf ]
+
+commands:
+  totems:
+    aliases:
+      - qtotems
+      - qtotem
+    description: main command for Qtotems
+    permission: qtotems.command
+
+permissions:
+  qtotems.command:
+    description: permission for the qtotems command
+    default: op

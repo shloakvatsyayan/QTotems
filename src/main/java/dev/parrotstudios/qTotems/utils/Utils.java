@@ -1,8 +1,9 @@
-package dev.parrotstudios.qTotems;
+package dev.parrotstudios.qTotems.utils;
 
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import dev.parrotstudios.qTotems.config.ConfigManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
-public class QUtils {
+public class Utils {
     private static final Map<Character, String> LEGACY_TO_MINI = new HashMap<>();
     private static final Cache<String, String> MESSAGE_CACHE = CacheBuilder.newBuilder()
             .expireAfterWrite(15, TimeUnit.MINUTES)
@@ -45,11 +46,8 @@ public class QUtils {
 
     public static String convertLegacyToMiniMessage(String input) {
         final StringBuilder sb = new StringBuilder(input.length());
-
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
-
-
             if (c == '#' && i + 6 < input.length()) {
                 final char prev = i > 0 ? input.charAt(i - 1) : 0;
                 if (prev != '<' && prev != ':') {
@@ -61,9 +59,7 @@ public class QUtils {
                     }
                 }
             }
-
             if (c == '&' || c == '§') {
-
                 if (i + 7 < input.length() && input.charAt(i + 1) == '#') {
                     final String hex = input.substring(i + 2, i + 8);
                     if (hex.matches("[0-9a-fA-F]{6}")) {
@@ -72,8 +68,6 @@ public class QUtils {
                         continue;
                     }
                 }
-
-
                 if (i + 1 < input.length()) {
                     final char code = Character.toLowerCase(input.charAt(i + 1));
                     final String replacement = LEGACY_TO_MINI.get(code);
@@ -85,16 +79,13 @@ public class QUtils {
                     }
                 }
             }
-
             sb.append(c);
         }
-
         return sb.toString();
     }
 
     public static Component text(String message) {
         if (message == null || message.isEmpty()) return Component.empty();
-
         try {
             return MiniMessage.miniMessage().deserialize(MESSAGE_CACHE.get(message, ()
                     -> convertLegacyToMiniMessage(message)));
@@ -103,5 +94,15 @@ public class QUtils {
         }
     }
 
+    public static Component textWithPrefix(String message) {
+        if (message == null || message.isEmpty()) return Component.empty();
+        try {
+            String prefix = ConfigManager.getString("prefix");
+            return MiniMessage.miniMessage().deserialize(MESSAGE_CACHE.get(message, ()
+                    -> convertLegacyToMiniMessage(prefix + message)));
+        } catch (Exception e) {
+            return MiniMessage.miniMessage().deserialize(convertLegacyToMiniMessage(message));
+        }
+    }
 
 }
