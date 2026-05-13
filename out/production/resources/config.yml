@@ -1,0 +1,12 @@
+prefix: "<dark_red>[<red><bold>QTotems</bold></red>]</dark_red> "
+
+totems:
+  "totem1":
+    name: "totem1"
+    lore:
+      - "this is a custom totem"
+      - "use wisely"
+    popEffects:
+      - "SLOW_FALLING;1;60"
+    equipEffects:
+      - "STRENGTH;1"
