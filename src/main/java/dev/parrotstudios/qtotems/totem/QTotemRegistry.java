@@ -109,7 +109,7 @@ public class QTotemRegistry {
             QTotems.getInstance().getServer().getScheduler().runTaskLater(QTotems.getInstance(),()->
                     qTotem.get().provideEquipEffects(player),1L);
             activePlayerEquips.put(player.getUniqueId(), qTotem.get());
-        },2L);
+        },1L);
     }
 
     public static QTotem getTotem(String totemName){
