@@ -45,6 +45,9 @@ public class QTotemRegistry {
         return qTotems.stream().map(QTotem::getName).toList();
     }
 
+    public static Map<UUID,QTotem> getActivePlayerEquips(){
+        return Map.copyOf(activePlayerEquips);
+    }
 
     /**
      * Checks if the given item stack is a registered custom totem.
@@ -223,7 +226,13 @@ public class QTotemRegistry {
      */
     public static void reload(){
         qTotems.clear();
-        activePlayerEquips.clear();
         populate();
+        getActivePlayerEquips().forEach((uuid, _) -> {
+            Player player = QTotems.getInstance().getServer().getPlayer(uuid);
+            if(player != null){
+                handleEquip(player,player.getInventory().getItemInOffHand());
+            }
+        });
+
     }
 }
